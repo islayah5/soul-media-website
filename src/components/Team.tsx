@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Sparkles, Cpu, ExternalLink, X, Globe, Award, ArrowLeft } from 'lucide-react';
 
@@ -13,7 +14,7 @@ export const Team: React.FC = () => {
     url: string;
   } | null>(null);
 
-  // Lock background page scroll and set attribute to hide main site navbar when modal is open
+  // Lock background page scroll and set modal open attribute on body
   useEffect(() => {
     if (activePortfolio) {
       document.body.style.overflow = 'hidden';
@@ -64,6 +65,99 @@ export const Team: React.FC = () => {
       portfolioUrl: '', // Ready for Joe's portfolio URL
     },
   ];
+
+  // Modal Portal Element rendered at top-level document.body
+  const renderModalPortal = () => {
+    if (!activePortfolio) return null;
+
+    return ReactDOM.createPortal(
+      <AnimatePresence>
+        <motion.div
+          key="portfolio-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-[99999] bg-[#0D0B14] w-screen h-screen flex flex-col overflow-hidden"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+        >
+          {/* Top Control Header Bar (High Visibility & Zero Clipping) */}
+          <div className="h-16 px-4 sm:px-8 bg-[#0D0B14] border-b border-[#FFB6D9]/30 flex items-center justify-between shrink-0 relative z-[100000] shadow-2xl">
+            {/* Left Action: Return to Soul Media */}
+            <button
+              onClick={() => setActivePortfolio(null)}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#FFB6D9] via-[#E5D4FF] to-[#C2FFE5] text-[#0D0B14] font-black text-xs sm:text-sm flex items-center gap-2 hover:shadow-[0_0_25px_rgba(255,182,217,0.8)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[3]" />
+              <span>Return to Soul Media</span>
+            </button>
+
+            {/* Center Title Indicator */}
+            <div className="hidden md:flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-[#C2FFE5] animate-pulse" />
+              <h4 className="text-sm font-bold text-white tracking-wide">
+                {activePortfolio.name} <span className="text-[#FFB6D9]">— {activePortfolio.role}</span>
+              </h4>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-3">
+              {activePortfolio.url && (
+                <a
+                  href={activePortfolio.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-full glass-card border border-white/25 text-xs font-bold text-gray-200 hover:text-white hover:border-[#FFB6D9] transition-all cursor-pointer"
+                  title={`Open ${activePortfolio.name.split(' ')[0]}'s site in a new tab`}
+                >
+                  <span className="hidden sm:inline">Open {activePortfolio.name.split(' ')[0]}'s Portfolio in New Tab</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-[#FFB6D9]" />
+                </a>
+              )}
+              <button
+                onClick={() => setActivePortfolio(null)}
+                className="p-2 sm:px-4 sm:py-2 rounded-full bg-white/10 hover:bg-red-500/20 border border-white/20 text-gray-200 hover:text-red-400 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                aria-label="Close Showcase"
+              >
+                <X className="w-4 h-4" />
+                <span className="hidden sm:inline">Close</span>
+              </button>
+            </div>
+          </div>
+
+          {/* iFrame Viewport Container (Solid #0D0B14 Background, Zero Text Bleed) */}
+          <div className="flex-grow w-full h-[calc(100vh-64px)] relative bg-[#0D0B14]">
+            {activePortfolio.url ? (
+              <iframe
+                src={activePortfolio.url}
+                title={`${activePortfolio.name} Portfolio`}
+                className="w-full h-full border-0 block bg-[#0D0B14]"
+                loading="eager"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#0D0B14]">
+                <Sparkles className="w-20 h-20 text-[#FFB6D9] mb-6 opacity-80 animate-pulse" />
+                <h3 className="text-3xl font-black text-white mb-3">
+                  {activePortfolio.name}'s Executive Portfolio Showcase
+                </h3>
+                <p className="text-base text-gray-300 max-w-lg mb-8 leading-relaxed">
+                  Direct showcase portfolio link will be active here shortly. Connect directly with the executive team for custom presentation decks.
+                </p>
+                <button
+                  onClick={() => setActivePortfolio(null)}
+                  className="px-8 py-4 rounded-full bg-gradient-to-r from-[#FFB6D9] to-[#E5D4FF] text-[#0D0B14] font-extrabold text-sm hover:scale-105 transition-all cursor-pointer"
+                >
+                  Return to Soul Media Website
+                </button>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </AnimatePresence>,
+      document.body
+    );
+  };
 
   return (
     <section id="team" className="py-28 px-6 relative z-10 bg-[#0A0810]/60">
@@ -158,7 +252,7 @@ export const Team: React.FC = () => {
                           url: member.portfolioUrl,
                         })
                       }
-                      className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FFB6D9] via-[#E5D4FF] to-[#C2FFE5] text-[#0D0B14] font-extrabold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-[#FFB6D9]/20"
+                      className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FFB6D9] via-[#E5D4FF] to-[#C2FFE5] text-[#0D0B14] font-extrabold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-[#FFB6D9]/20 cursor-pointer"
                     >
                       <Globe className="w-4 h-4" />
                       <span>Preview Interactive Portfolio</span>
@@ -168,7 +262,7 @@ export const Team: React.FC = () => {
                       href={member.portfolioUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-2.5 rounded-xl glass-card border border-white/15 text-gray-300 hover:text-white hover:border-[#FFB6D9] text-xs font-bold flex items-center justify-center gap-2 transition-all"
+                      className="w-full py-2.5 rounded-xl glass-card border border-white/15 text-gray-300 hover:text-white hover:border-[#FFB6D9] text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       <span>Open {member.name.split(' ')[0]}'s Portfolio in New Tab</span>
                       <ExternalLink className="w-3.5 h-3.5 text-[#FFB6D9]" />
@@ -183,7 +277,7 @@ export const Team: React.FC = () => {
                         url: '',
                       })
                     }
-                    className="w-full py-3.5 rounded-2xl glass-card border border-white/10 text-xs font-bold text-gray-300 flex items-center justify-center gap-2 hover:text-white hover:border-[#FFB6D9] transition-all"
+                    className="w-full py-3.5 rounded-2xl glass-card border border-white/10 text-xs font-bold text-gray-300 flex items-center justify-center gap-2 hover:text-white hover:border-[#FFB6D9] transition-all cursor-pointer"
                   >
                     <Award className="w-4 h-4 text-[#C2FFE5]" />
                     <span>Executive Showcase</span>
@@ -195,89 +289,8 @@ export const Team: React.FC = () => {
         </div>
       </div>
 
-      {/* Ultra High Z-Index Full-Screen Portfolio Showcase Overlay (z-[9999] covers Soul Media Navbar) */}
-      <AnimatePresence>
-        {activePortfolio && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] bg-[#0D0B14] w-screen h-screen overflow-hidden"
-          >
-            {/* 100% Full Unobstructed Viewport iFrame */}
-            <div className="w-full h-full relative bg-[#0D0B14]">
-              {activePortfolio.url ? (
-                <iframe
-                  src={activePortfolio.url}
-                  title={`${activePortfolio.name} Portfolio`}
-                  className="w-full h-full border-0 block"
-                  loading="eager"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#0D0B14]">
-                  <Sparkles className="w-20 h-20 text-[#FFB6D9] mb-6 opacity-80 animate-pulse" />
-                  <h3 className="text-3xl font-black text-white mb-3">
-                    {activePortfolio.name}'s Executive Portfolio Showcase
-                  </h3>
-                  <p className="text-base text-gray-300 max-w-lg mb-8 leading-relaxed">
-                    Direct showcase portfolio link will be active here shortly. Connect directly with the executive team for custom presentation decks.
-                  </p>
-                  <button
-                    onClick={() => setActivePortfolio(null)}
-                    className="px-8 py-4 rounded-full bg-gradient-to-r from-[#FFB6D9] to-[#E5D4FF] text-[#0D0B14] font-extrabold text-sm hover:scale-105 transition-all"
-                  >
-                    Return to Soul Media Website
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Floating Island Navigation Control Bar (Anchored at Bottom-Center - Completely Free of Soul Media Navbar) */}
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-3 p-2.5 rounded-full glass-card border border-[#FFB6D9]/40 bg-[#0D0B14]/95 backdrop-blur-2xl shadow-[0_10px_40px_rgba(0,0,0,0.9)]">
-              {/* Primary Action Button: Return to Soul Media */}
-              <button
-                onClick={() => setActivePortfolio(null)}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-[#FFB6D9] via-[#E5D4FF] to-[#C2FFE5] text-[#0D0B14] font-black text-xs sm:text-sm flex items-center gap-2.5 hover:shadow-[0_0_30px_rgba(255,182,217,0.7)] transition-all transform hover:scale-105 active:scale-95"
-              >
-                <ArrowLeft className="w-4 h-4 stroke-[3]" />
-                <span>Return to Soul Media</span>
-              </button>
-
-              {/* Title Indicator */}
-              <div className="hidden sm:flex items-center gap-2 px-3 border-l border-white/20 text-xs font-bold text-gray-200">
-                <span className="w-2 h-2 rounded-full bg-[#C2FFE5] animate-pulse" />
-                <span>{activePortfolio.name}</span>
-              </div>
-
-              {/* External Tab Launch Button */}
-              {activePortfolio.url && (
-                <a
-                  href={activePortfolio.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-3 rounded-full glass-card border border-white/20 text-xs font-bold text-gray-200 hover:text-white hover:border-[#FFB6D9] flex items-center gap-1.5 transition-all"
-                  title={`Open ${activePortfolio.name.split(' ')[0]}'s site in a new tab`}
-                >
-                  <span className="hidden md:inline">Open {activePortfolio.name.split(' ')[0]}'s Portfolio in New Tab</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-[#FFB6D9]" />
-                </a>
-              )}
-
-              {/* Exit Button */}
-              <button
-                onClick={() => setActivePortfolio(null)}
-                className="p-3 rounded-full bg-white/10 hover:bg-red-500/20 text-gray-300 hover:text-red-400 border border-white/15 transition-all"
-                title="Close overlay"
-                aria-label="Close Portfolio"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Render Modal via React Portal directly onto document.body */}
+      {renderModalPortal()}
     </section>
   );
 };

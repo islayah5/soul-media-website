@@ -4,6 +4,7 @@ export const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [modalActive, setModalActive] = useState(false);
 
   useEffect(() => {
     // Only initialize on desktop/fine pointers
@@ -42,13 +43,27 @@ export const CustomCursor: React.FC = () => {
     };
   }, [isVisible]);
 
-  if (!isVisible) return null;
+  // Observer for portfolio modal active attribute on body
+  useEffect(() => {
+    const checkModalState = () => {
+      setModalActive(document.body.hasAttribute('data-portfolio-modal-open'));
+    };
+
+    checkModalState();
+    const observer = new MutationObserver(checkModalState);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-portfolio-modal-open'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Hide custom follower ring when portfolio iframe showcase is active to prevent mouse flicker
+  if (!isVisible || modalActive) return null;
 
   return (
     <>
       {/* Outer Follower Ring */}
       <div
-        className="fixed pointer-events-none z-[9999] transition-transform duration-150 ease-out hidden md:block"
+        className="fixed pointer-events-none z-[999999] transition-transform duration-150 ease-out hidden md:block"
         style={{
           transform: `translate3d(${position.x - (isHovered ? 24 : 16)}px, ${
             position.y - (isHovered ? 24 : 16)
@@ -66,7 +81,7 @@ export const CustomCursor: React.FC = () => {
 
       {/* Inner Precision Dot */}
       <div
-        className="fixed pointer-events-none z-[10000] transition-transform duration-75 ease-out hidden md:block"
+        className="fixed pointer-events-none z-[1000000] transition-transform duration-75 ease-out hidden md:block"
         style={{
           transform: `translate3d(${position.x - 3}px, ${position.y - 3}px, 0)`,
         }}
