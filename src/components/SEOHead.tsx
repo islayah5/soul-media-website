@@ -9,12 +9,12 @@ export const SEOHead: React.FC = () => {
         {
           "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
           "@id": "https://soulmediagroup.com/#organization",
-          "name": "Soul Media Group",
-          "alternateName": "Soul Media",
+          "name": "Soul Media",
+          "alternateName": "Soul Media Agency",
           "url": "https://soulmediagroup.com",
-          "logo": "https://soulmediagroup.com/brand/soul-media-logo-transparent.png",
+          "logo": "https://soulmediagroup.com/brand/soul-media-og-card.png",
           "email": "soulmediagroup.info@gmail.com",
-          "description": "Soul Media Group is a premium video production, 3D modeling, visual editing, and executive media agency serving Tampa Bay, Clearwater, and nationwide.",
+          "description": "Soul Media is a video production, 3D modeling, visual editing, and executive media agency serving Tampa Bay, Clearwater, and nationwide.",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "Clearwater",
@@ -43,36 +43,26 @@ export const SEOHead: React.FC = () => {
           "founder": {
             "@type": "Person",
             "name": "Jada Brown",
-            "jobTitle": "Founder & Executive Producer / Brand Director"
+            "jobTitle": "Founder & Executive Producer"
           },
           "employee": [
             {
               "@type": "Person",
               "name": "Isaiah Chandler",
-              "jobTitle": "Systems & Operations Director / Growth Strategist"
+              "jobTitle": "Systems & Operations Director"
             },
             {
               "@type": "Person",
               "name": "Joe Irizarry",
-              "jobTitle": "Director of Photography & Videography / Lead Visual Editor"
+              "jobTitle": "Director of Photography & Videography"
             }
-          ],
-          "knowsAbout": [
-            "Video Production",
-            "Cinematic Filming",
-            "Post-Production Visual Editing",
-            "3D Modeling",
-            "WebGL Web Design",
-            "Commercial Graphic Design",
-            "Social Media Management",
-            "Talent Sourcing Advisory"
           ]
         },
         {
           "@type": "WebSite",
           "@id": "https://soulmediagroup.com/#website",
           "url": "https://soulmediagroup.com",
-          "name": "Soul Media Group",
+          "name": "Soul Media",
           "publisher": {
             "@id": "https://soulmediagroup.com/#organization"
           }
