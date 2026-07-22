@@ -6,65 +6,14 @@
       <stop offset="100%" stop-color="#E5D4FF" />
     </linearGradient>
 
-    <radialGradient id="favFlashBurst" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1" />
-      <stop offset="40%" stop-color="#C2FFE5" stop-opacity="0.9" />
-      <stop offset="70%" stop-color="#FFB6D9" stop-opacity="0.5" />
-      <stop offset="100%" stop-color="#FFB6D9" stop-opacity="0" />
-    </radialGradient>
-
     <filter id="softFavGlow">
-      <feGaussianBlur stdDeviation="1.2" result="blur" />
+      <feGaussianBlur stdDeviation="1" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-
-    <style>
-      @keyframes flashPulse {
-        0%, 80%, 100% {
-          opacity: 0;
-          transform: scale(0.2);
-        }
-        84% {
-          opacity: 1;
-          transform: scale(1.6);
-        }
-        88% {
-          opacity: 0.5;
-          transform: scale(1.1);
-        }
-        92% {
-          opacity: 0.95;
-          transform: scale(1.4);
-        }
-        96% {
-          opacity: 0;
-          transform: scale(0.3);
-        }
-      }
-
-      @keyframes cameraBreath {
-        0%, 100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.03);
-        }
-      }
-
-      .camera-flash-light {
-        animation: flashPulse 3.5s infinite ease-in-out;
-        transform-origin: 43px 12px;
-      }
-
-      .camera-body-group {
-        animation: cameraBreath 3.5s infinite ease-in-out;
-        transform-origin: 32px 32px;
-      }
-    </style>
   </defs>
 
-  <!-- Transparent Background - Zero Black Box -->
-  <g class="camera-body-group" filter="url(#softFavGlow)">
+  <!-- 100% Transparent Background - Pure Camera Emblem -->
+  <g filter="url(#softFavGlow)">
     <!-- Top Flash Mount Bump -->
     <rect x="36" y="8" width="14" height="8" rx="3" fill="url(#favGradient)" />
 
@@ -77,10 +26,10 @@
     <!-- Inner Camera Lens Pupil -->
     <circle cx="32" cy="34" r="6" fill="url(#favGradient)" />
 
-    <!-- Viewfinder Dot -->
+    <!-- Viewfinder Indicator -->
     <circle cx="15" cy="23" r="2.5" fill="#0D0B14" opacity="0.7" />
 
-    <!-- Subtle Pulsing Camera Flash Light Burst -->
-    <circle class="camera-flash-light" cx="43" cy="12" r="11" fill="url(#favFlashBurst)" />
+    <!-- Camera Lens Reflection Ring -->
+    <circle cx="30" cy="32" r="2" fill="#FFFFFF" opacity="0.8" />
   </g>
 </svg>
