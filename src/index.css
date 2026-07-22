@@ -14,6 +14,20 @@ body {
   background-color: #0D0B14;
   color: #ffffff;
   font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hardware Compositor Fixes to Eliminate Mobile Safari Flickering */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.glass-card, .glass-nav, header, main section {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 /* Hide OS default cursor on desktop fine-pointer devices for custom ring experience */
@@ -38,29 +52,39 @@ body {
   background: #FF80BF;
 }
 
+/* Executive Glassmorphism Cards */
 .glass-card {
-  background: rgba(22, 18, 36, 0.65);
+  background: rgba(22, 18, 36, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 182, 217, 0.12);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 182, 217, 0.15);
+  box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Optimized Mobile Glass Layer (Prevents WebKit Blurry Composite Glitches) */
+@media (max-width: 768px) {
+  .glass-card {
+    background: rgba(22, 18, 36, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
 }
 
 .glass-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-card-hover:hover {
-  background: rgba(30, 24, 48, 0.8);
-  border-color: rgba(255, 182, 217, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(255, 182, 217, 0.15);
+  background: rgba(30, 24, 48, 0.92);
+  border-color: rgba(255, 182, 217, 0.35);
+  box-shadow: 0 14px 44px 0 rgba(255, 182, 217, 0.2);
   transform: translateY(-4px);
 }
 
 .glass-nav {
-  background: rgba(13, 11, 20, 0.75);
+  background: rgba(13, 11, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 182, 217, 0.1);
+  border-bottom: 1px solid rgba(255, 182, 217, 0.15);
 }
 
 .gradient-text {
