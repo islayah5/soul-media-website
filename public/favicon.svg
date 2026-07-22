@@ -1,35 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <linearGradient id="favGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFEBEF" />
-      <stop offset="50%" stop-color="#FFB6D9" />
-      <stop offset="100%" stop-color="#E5D4FF" />
-    </linearGradient>
-
-    <filter id="softFavGlow">
-      <feGaussianBlur stdDeviation="1" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-  </defs>
-
-  <!-- 100% Transparent Background - Pure Camera Emblem -->
-  <g filter="url(#softFavGlow)">
-    <!-- Top Flash Mount Bump -->
-    <rect x="36" y="8" width="14" height="8" rx="3" fill="url(#favGradient)" />
-
-    <!-- Main Camera Body -->
-    <rect x="6" y="15" width="52" height="38" rx="10" fill="url(#favGradient)" />
-
-    <!-- Outer Camera Lens Ring -->
-    <circle cx="32" cy="34" r="12" fill="#0D0B14" />
-
-    <!-- Inner Camera Lens Pupil -->
-    <circle cx="32" cy="34" r="6" fill="url(#favGradient)" />
-
-    <!-- Viewfinder Indicator -->
-    <circle cx="15" cy="23" r="2.5" fill="#0D0B14" opacity="0.7" />
-
-    <!-- Camera Lens Reflection Ring -->
-    <circle cx="30" cy="32" r="2" fill="#FFFFFF" opacity="0.8" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="64" height="64">
+    <defs>
+        <linearGradient id="markPurpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FF7AB7" />
+            <stop offset="100%" stop-color="#9B72CF" />
+        </linearGradient>
+    </defs>
+    <rect width="100" height="100" rx="28" fill="url(#markPurpleGrad)"/>
+    <circle cx="50" cy="50" r="32" fill="none" stroke="white" stroke-width="6"/>
+    <path d="M42 34 L66 50 L42 66 Z" fill="white"/>
 </svg>
