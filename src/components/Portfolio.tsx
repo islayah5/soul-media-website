@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, ExternalLink, X } from 'lucide-react';
+import velvetHorizonImg from '../assets/velvet_horizon_brand.jpg';
+import apexCapitalImg from '../assets/apex_capital_reel.jpg';
 
 export const Portfolio: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -33,7 +35,7 @@ export const Portfolio: React.FC = () => {
       title: 'Velvet Horizon Rebrand',
       category: 'Brand Strategy',
       metric: 'Brand Identity',
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+      image: velvetHorizonImg,
       description: 'Complete brand positioning, visual design system, and executive marketing guidelines.',
     },
     {
@@ -47,7 +49,7 @@ export const Portfolio: React.FC = () => {
       title: 'Apex Tech Portal',
       category: 'Web & Tech',
       metric: '3D Web Build',
-      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80',
+      image: apexCapitalImg,
       description: 'High-speed React web experience with interactive 3D modeling and smart lead pipelines.',
     },
     {
@@ -115,7 +117,7 @@ export const Portfolio: React.FC = () => {
 
         {/* Portfolio Grid */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.title}

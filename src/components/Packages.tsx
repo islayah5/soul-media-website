@@ -201,7 +201,7 @@ export const Packages: React.FC = () => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={activeCategory}
             initial={{ opacity: 0, y: 20 }}
