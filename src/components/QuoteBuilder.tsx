@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Sparkles, Sliders, CheckSquare, User, Send, CheckCircle, ArrowRight, ArrowLeft, Calendar } from 'lucide-react';
-import { formatQuoteEmail, triggerMailto } from '../utils/emailService';
+import { formatQuoteEmail, sendLeadPayloadBackground } from '../utils/emailService';
 import { CalBookingModal } from './CalBookingModal';
 
 export const QuoteBuilder: React.FC = () => {
@@ -67,7 +67,8 @@ export const QuoteBuilder: React.FC = () => {
       console.log('Confetti triggered', err);
     }
 
-    const { subject, body } = formatQuoteEmail({
+    // 1. Silent Background Lead Capture & Anti-Loss Email Dispatch
+    sendLeadPayloadBackground('ScopeBuilder', {
       name: formData.name,
       email: formData.email,
       businessName: formData.businessName,

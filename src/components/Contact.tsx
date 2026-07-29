@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageSquare, Send, Calendar, CheckCircle2, ExternalLink } from 'lucide-react';
-import { formatContactEmail, triggerMailto } from '../utils/emailService';
+import { formatContactEmail, sendLeadPayloadBackground } from '../utils/emailService';
 import { CalBookingModal } from './CalBookingModal';
 
 export const Contact: React.FC = () => {
@@ -20,6 +20,9 @@ export const Contact: React.FC = () => {
       setStatus('Please provide your name and email address.');
       return;
     }
+
+    // Silent background lead capture & email dispatch
+    sendLeadPayloadBackground('ContactForm', formData);
 
     setStatus('Inquiry compiled! Strategy booking calendar launched.');
     setIsCalModalOpen(true);
