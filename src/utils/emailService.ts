@@ -96,47 +96,47 @@ export const sendLeadPayloadBackground = async (
     console.warn('Local storage lead vault caching error:', err);
   }
 
-  // 2. Dispatch silent background AJAX request to soulmediagroup.info@gmail.com
+  // 2. Format lead submission fields
+  let emailSubject = '';
+  let formFields: Record<string, any> = {};
+
+  if (type === 'ScopeBuilder') {
+    const scopeData = payload as QuoteSubmissionData;
+    emailSubject = `⚡ [NEW LEAD] Scope Builder Submission: ${scopeData.name}`;
+    formFields = {
+      _subject: emailSubject,
+      _template: 'table',
+      _captcha: 'false',
+      'Lead Type': 'Scope Builder Engine',
+      'Client Name': scopeData.name,
+      'Email Address': scopeData.email,
+      'Business / Brand': scopeData.businessName || 'Not specified',
+      'Monthly Volume Target': `${scopeData.deliverableVolume} Assets / Month`,
+      'Management Preference': scopeData.managementLevel,
+      'Estimated Monthly Range': scopeData.estimatedMin ? `$${scopeData.estimatedMin.toLocaleString()} - $${scopeData.estimatedMax?.toLocaleString()} / mo` : 'N/A',
+      'Selected Services': scopeData.servicesSelected.join(', '),
+      'Project Vision Notes': scopeData.notes || 'None provided',
+      'Submission Timestamp': timestamp,
+    };
+  } else {
+    const contactData = payload as ContactSubmissionData;
+    emailSubject = `📩 [NEW LEAD] Direct Inquiry: ${contactData.name} (${contactData.serviceInterest})`;
+    formFields = {
+      _subject: emailSubject,
+      _template: 'table',
+      _captcha: 'false',
+      'Lead Type': 'Executive Contact Inquiry',
+      'Name': contactData.name,
+      'Email Address': contactData.email,
+      'Primary Interest': contactData.serviceInterest,
+      'Message': contactData.message,
+      'Submission Timestamp': timestamp,
+    };
+  }
+
+  // 3. Primary Dispatch: FormSubmit AJAX Endpoint
   try {
     const formSubmitUrl = `https://formsubmit.co/ajax/${TARGET_EMAIL}`;
-    
-    let emailSubject = '';
-    let formFields: Record<string, any> = {};
-
-    if (type === 'ScopeBuilder') {
-      const scopeData = payload as QuoteSubmissionData;
-      emailSubject = `⚡ [NEW LEAD] Scope Builder Submission: ${scopeData.name}`;
-      formFields = {
-        _subject: emailSubject,
-        _template: 'table',
-        _captcha: 'false',
-        'Lead Type': 'Scope Builder Engine',
-        'Client Name': scopeData.name,
-        'Email Address': scopeData.email,
-        'Business / Brand': scopeData.businessName || 'Not specified',
-        'Monthly Volume Target': `${scopeData.deliverableVolume} Assets / Month`,
-        'Management Preference': scopeData.managementLevel,
-        'Estimated Monthly Range': scopeData.estimatedMin ? `$${scopeData.estimatedMin.toLocaleString()} - $${scopeData.estimatedMax?.toLocaleString()} / mo` : 'N/A',
-        'Selected Services': scopeData.servicesSelected.join(', '),
-        'Project Vision Notes': scopeData.notes || 'None provided',
-        'Submission Timestamp': timestamp,
-      };
-    } else {
-      const contactData = payload as ContactSubmissionData;
-      emailSubject = `📩 [NEW LEAD] Direct Inquiry: ${contactData.name} (${contactData.serviceInterest})`;
-      formFields = {
-        _subject: emailSubject,
-        _template: 'table',
-        _captcha: 'false',
-        'Lead Type': 'Executive Contact Inquiry',
-        'Name': contactData.name,
-        'Email Address': contactData.email,
-        'Primary Interest': contactData.serviceInterest,
-        'Message': contactData.message,
-        'Submission Timestamp': timestamp,
-      };
-    }
-
     const response = await fetch(formSubmitUrl, {
       method: 'POST',
       headers: {
@@ -147,11 +147,35 @@ export const sendLeadPayloadBackground = async (
     });
 
     if (response.ok) {
-      console.log(`[Soul Lead Engine] Silent lead dispatch successful for ${type}`);
+      const data = await response.json();
+      console.log(`[Soul Lead Engine] Silent lead dispatch successful for ${type}:`, data);
       return true;
     }
   } catch (err) {
-    console.error('[Soul Lead Engine] Silent background dispatch error:', err);
+    console.warn('[Soul Lead Engine] Primary FormSubmit JSON dispatch warning:', err);
+  }
+
+  // 4. Secondary Channel: FormSubmit FormData Fallback
+  try {
+    const formData = new FormData();
+    Object.keys(formFields).forEach(key => {
+      formData.append(key, formFields[key]);
+    });
+
+    const response = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      console.log(`[Soul Lead Engine] FormData fallback lead dispatch successful for ${type}`);
+      return true;
+    }
+  } catch (err) {
+    console.warn('[Soul Lead Engine] FormData fallback warning:', err);
   }
 
   return false;
