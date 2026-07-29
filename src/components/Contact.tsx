@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Send, Calendar, CheckCircle2 } from 'lucide-react';
+import { Mail, MessageSquare, Send, Calendar, CheckCircle2, ExternalLink } from 'lucide-react';
 import { formatContactEmail, triggerMailto } from '../utils/emailService';
+import { CalBookingModal } from './CalBookingModal';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export const Contact: React.FC = () => {
     message: '',
   });
   const [status, setStatus] = useState<string | null>(null);
+  const [isCalModalOpen, setIsCalModalOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,9 +21,8 @@ export const Contact: React.FC = () => {
       return;
     }
 
-    const { subject, body } = formatContactEmail(formData);
-    setStatus('Opening email client...');
-    triggerMailto(subject, body);
+    setStatus('Inquiry compiled! Strategy booking calendar launched.');
+    setIsCalModalOpen(true);
   };
 
   return (
@@ -68,14 +69,20 @@ export const Contact: React.FC = () => {
                 </div>
               </div>
 
-              <div className="glass-card p-5 rounded-2xl border border-white/10 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#E5D4FF]/15 border border-[#E5D4FF]/30 flex items-center justify-center text-[#E5D4FF]">
-                  <Calendar className="w-6 h-6" />
+              <div
+                onClick={() => setIsCalModalOpen(true)}
+                className="glass-card p-5 rounded-2xl border border-white/10 flex items-center justify-between gap-4 cursor-pointer hover:border-[#FF94C7] transition-all group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#E5D4FF]/15 border border-[#E5D4FF]/30 flex items-center justify-center text-[#E5D4FF] group-hover:scale-105 transition-transform">
+                    <Calendar className="w-6 h-6 text-[#99FFE0]" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-400 block font-medium">Strategy Consultation (30 Min)</span>
+                    <span className="text-base font-bold text-white group-hover:text-[#99FFE0] transition-colors">Book Strategy Call (cal.com/soul-media/30min)</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-xs text-gray-400 block font-medium">Strategy Consultation</span>
-                  <span className="text-base font-bold text-white">Direct 1-on-1 Session with Founders</span>
-                </div>
+                <ExternalLink className="w-4 h-4 text-[#99FFE0] opacity-80 group-hover:opacity-100" />
               </div>
             </div>
           </div>
@@ -93,9 +100,18 @@ export const Contact: React.FC = () => {
             </h3>
 
             {status && (
-              <div className="mb-6 p-4 rounded-xl bg-[#FFB6D9]/15 border border-[#FFB6D9] text-[#FFB6D9] text-xs font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>{status}</span>
+              <div className="mb-6 p-4 rounded-xl bg-[#99FFE0]/15 border border-[#99FFE0]/40 text-[#99FFE0] text-xs font-semibold flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-[#99FFE0]" />
+                  <span>{status}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsCalModalOpen(true)}
+                  className="px-4 py-1.5 rounded-full bg-[#99FFE0] text-[#0D0B14] font-black text-[11px] hover:scale-105 transition-transform cursor-pointer shrink-0"
+                >
+                  Re-Open Calendar
+                </button>
               </div>
             )}
 
@@ -160,6 +176,15 @@ export const Contact: React.FC = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Cal.com Pre-Filled Strategy Booking Modal */}
+      <CalBookingModal
+        isOpen={isCalModalOpen}
+        onClose={() => setIsCalModalOpen(false)}
+        prefillName={formData.name}
+        prefillEmail={formData.email}
+        scopeSummary={`Interest: ${formData.serviceInterest} | Message: ${formData.message}`}
+      />
     </section>
   );
 };

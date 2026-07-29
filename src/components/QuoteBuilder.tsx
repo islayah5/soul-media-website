@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles, Sliders, CheckSquare, User, Send, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Sparkles, Sliders, CheckSquare, User, Send, CheckCircle, ArrowRight, ArrowLeft, Calendar } from 'lucide-react';
 import { formatQuoteEmail, triggerMailto } from '../utils/emailService';
+import { CalBookingModal } from './CalBookingModal';
 
 export const QuoteBuilder: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -20,6 +21,7 @@ export const QuoteBuilder: React.FC = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isCalModalOpen, setIsCalModalOpen] = useState(false);
 
   const availableServices = [
     'On-Location Directing & Filming (Tampa Bay / Remote)',
@@ -56,10 +58,10 @@ export const QuoteBuilder: React.FC = () => {
 
     try {
       confetti({
-        particleCount: 150,
-        spread: 80,
+        particleCount: 180,
+        spread: 90,
         origin: { y: 0.6 },
-        colors: ['#FFB6D9', '#E5D4FF', '#FFD4C2', '#C2FFE5'],
+        colors: ['#FF94C7', '#D4B8FF', '#99FFE0', '#FFD4C2'],
       });
     } catch (err) {
       console.log('Confetti triggered', err);
@@ -76,11 +78,9 @@ export const QuoteBuilder: React.FC = () => {
     });
 
     setSubmitted(true);
-    setToastMessage('Opening your email client to send your custom proposal request...');
 
-    setTimeout(() => {
-      triggerMailto(subject, body);
-    }, 600);
+    // Launch Cal.com pre-filled booking modal directly
+    setIsCalModalOpen(true);
   };
 
   return (
@@ -367,8 +367,18 @@ export const QuoteBuilder: React.FC = () => {
                 </div>
 
                 {submitted && (
-                  <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500 text-emerald-300 text-center text-sm font-semibold">
-                    ✨ Your request has been formatted! If your email app did not open automatically, please send your email directly to <strong>soulmediagroup.info@gmail.com</strong>.
+                  <div className="p-5 rounded-2xl bg-[#99FFE0]/15 border border-[#99FFE0]/40 text-[#99FFE0] text-center space-y-3">
+                    <p className="text-sm font-bold">
+                      ✨ Proposal Compiled Successfully! Your strategy call calendar modal is active.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsCalModalOpen(true)}
+                      className="px-6 py-2.5 rounded-full bg-[#99FFE0] text-[#0D0B14] font-black text-xs inline-flex items-center gap-2 hover:scale-105 transition-transform shadow-lg cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      <span>Re-Open Booking Calendar (cal.com/soul-media/30min)</span>
+                    </button>
                   </div>
                 )}
               </motion.div>
@@ -410,6 +420,15 @@ export const QuoteBuilder: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Cal.com Pre-Filled Strategy Booking Modal */}
+      <CalBookingModal
+        isOpen={isCalModalOpen}
+        onClose={() => setIsCalModalOpen(false)}
+        prefillName={formData.name}
+        prefillEmail={formData.email}
+        scopeSummary={`Monthly Target: ${volume} deliverables/mo | Est: $${estimatedMin}-$${estimatedMax}/mo`}
+      />
     </section>
   );
 };
